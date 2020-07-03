@@ -1,41 +1,27 @@
-﻿using System;
-using System.IO;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Topshelf;
 
 namespace Holf.ProcessShepherd.Service
 {
-	class Program
+    class Program
 	{
 		static void Main(string[] args)
 		{
+            var services = new ServiceCollection();
+
+            var serviceProvider = Bootstrapper.GetServiceProvider(services);
+
             HostFactory.Run(x => { 
-                x.Service<ServiceManager>();
+                x.Service<ServiceControl>(x =>
+                {
+                    x.ConstructUsing(serviceProvider.GetService<ServiceManager>);
+                    x.WhenStarted((service, hostControl) => service.Start(hostControl));
+                    x.WhenStopped((service, hostControl) => service.Stop(hostControl));
+                });
+
                 x.SetServiceName("Process Shepherd");
                 x.StartAutomatically();
             });
 		}
 	}
-
-    public class ServiceManager : ServiceControl
-    {
-        private const string _logFileLocation = @"C:\temp\servicelog.txt";
-
-        private void Log(string logMessage)
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(_logFileLocation));
-            File.AppendAllText(_logFileLocation, DateTime.UtcNow.ToString() + " : " + logMessage + Environment.NewLine);
-        }
-
-        public bool Start(HostControl hostControl)
-        {
-            Log("Starting");
-            return true;
-        }
-
-        public bool Stop(HostControl hostControl)
-        {
-            Log("Stopping");
-            return true;
-        }
-    }
 }
