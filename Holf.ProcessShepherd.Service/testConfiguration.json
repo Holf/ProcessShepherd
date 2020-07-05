@@ -1,3 +1,7 @@
 {
-  "PollIntervalMs": 5000
+  "Mode": "LoggingOnly",
+  "ConfigUpdatePollIntervalMs": 20000,
+  "PrcoessPollIntervalMs": 5000,
+  "PermittedProcesses": [ "this", "that" ],
+  "ShepherdedUsers":  [ "peter", "ludwig", "*holf*" ]
 }

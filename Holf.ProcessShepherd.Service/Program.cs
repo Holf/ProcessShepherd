@@ -14,7 +14,7 @@ namespace Holf.ProcessShepherd.Service
             HostFactory.Run(x => { 
                 x.Service<ServiceControl>(x =>
                 {
-                    x.ConstructUsing(serviceProvider.GetService<ServiceManager>);
+                    x.ConstructUsing(serviceProvider.GetService<WindowsServiceWrapper>);
                     x.WhenStarted((service, hostControl) => service.Start(hostControl));
                     x.WhenStopped((service, hostControl) => service.Stop(hostControl));
                 });
