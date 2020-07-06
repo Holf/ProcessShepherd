@@ -9,6 +9,10 @@ namespace Holf.ProcessShepherd.Service
 {
     public class WindowsServiceWrapper : ServiceControl
     {
+        private static readonly object lockObject = new object();
+
+        private bool processing;
+        
         private readonly ILogger logger;
         private readonly IOrchestrator orchestrator;
         private readonly IShepherdConfigurationProvider shepherdConfigurationProvider;
@@ -57,7 +61,23 @@ namespace Holf.ProcessShepherd.Service
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            lock (lockObject)
+            {
+                if (processing)
+                {
+                    logger.Log("Already processing");
+                    return;
+                }
+
+                processing = true;
+            }
+
             orchestrator.DoStuff();
+
+            lock (lockObject)
+            {
+                processing = false;
+            }
         }
 
         public bool Stop(HostControl hostControl)
