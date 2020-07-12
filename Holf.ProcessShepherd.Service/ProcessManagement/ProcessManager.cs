@@ -1,4 +1,5 @@
 ﻿using Holf.ProcessShepherd.Service.Configuration;
+using System;
 using System.Diagnostics;
 using System.Linq;
 
@@ -13,26 +14,34 @@ namespace Holf.ProcessShepherd.Service.ProcessManagement
     {
         private readonly ILogger logger;
         private readonly IUsernameService usernameService;
+        private readonly ILoggedOnUsersService loggedOnUsersService;
 
-        public ProcessManager(ILogger logger, IUsernameService usernameService)
+        public ProcessManager(ILogger logger, IUsernameService usernameService, ILoggedOnUsersService loggedOnUsersService)
         {
             this.logger = logger;
             this.usernameService = usernameService;
+            this.loggedOnUsersService = loggedOnUsersService;
         }
 
         public void TerminateUnpermittedServices(ShepherdConfiguration shepherdConfiguration)
         {
-            var processes = Process.GetProcesses();
-            var shepherdProcess = processes.SingleOrDefault(x => x.ProcessName == "ProcessShepherd");
+            var usernamesAndSessionIds = loggedOnUsersService.GetUsernamesAndSessionIds();
+            var loggedOnUsername = usernameService.GetLoggedOnUsername();
+            int sessionIdForLoggedOnUser = usernamesAndSessionIds.Single(x => x.Username == loggedOnUsername).SessionId;
 
-            var users = processes.Where(x => x.ProcessName == "explorer").Select(y => y.GetProcessUser());
+            var processesForLoggedOnUser = Process.GetProcesses().Where(x => x.SessionId == sessionIdForLoggedOnUser);
+            var shepherdProcess = processesForLoggedOnUser.SingleOrDefault(x => x.ProcessName == "ProcessShepherd");
 
-            if (shepherdProcess == null)
+       
+           // var userProcesses = processes.Where(x => x.SessionId == 1 && x.MainWindowTitle != string.Empty).ToList(); // processes.Where(x => x.GetProcessUser() == username).ToList();
+
+            if (shepherdProcess != null)
             {
-                logger.Log("Oh dear...");
+                logger.Log("Shepherd Process is running... no processes will be terminated");
+                return;
             }
-        }
 
-        
+            var windowedProcessesForLoggedOnUser = processesForLoggedOnUser.Where(x => x.MainWindowTitle != string.Empty);
+        }
     }
 }

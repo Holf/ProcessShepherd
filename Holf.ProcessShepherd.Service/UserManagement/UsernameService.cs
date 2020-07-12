@@ -1,8 +1,11 @@
 ﻿using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
+using System.Runtime.InteropServices;
+using System.Security.Policy;
 
 namespace Holf.ProcessShepherd.Service.ProcessManagement
 {
@@ -19,7 +22,8 @@ namespace Holf.ProcessShepherd.Service.ProcessManagement
 		
 		public string GetLoggedOnUsername()
 		{
-			if (loggedOnUsername == null)
+
+            if (loggedOnUsername == null)
 			{
 				ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT UserName FROM Win32_ComputerSystem");
 				ManagementObjectCollection collection = searcher.Get();

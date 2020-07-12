@@ -12,6 +12,7 @@ namespace Holf.ProcessShepherd.Service
             services.AddSingleton<ILogger, Logger>();
             services.AddSingleton<IShepherdConfigurationProvider, JsonConfigurationProvider>();
             services.AddSingleton<IUsernameService, UsernameService>();
+            services.AddSingleton<ILoggedOnUsersService, LoggedOnUsersService>();
             services.AddSingleton<IProcessManager, ProcessManager>();
             services.AddSingleton<IOrchestrator, Orchestrator>();
             services.AddSingleton<WindowsServiceWrapper>();
