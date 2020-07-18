@@ -5,6 +5,6 @@ namespace Holf.ProcessShepherd.Service.Configuration
 {
     public interface IShepherdConfigurationProvider
     {
-        public Task<ShepherdConfiguration> GetConfiguration();
+        Task<ShepherdConfiguration> GetConfiguration();
     }
 }

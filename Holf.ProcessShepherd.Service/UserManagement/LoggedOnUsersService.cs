@@ -4,12 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace Holf.ProcessShepherd.Service
 {
-    public interface ILoggedOnUsersService
-    {
-        List<UsernameAndSessionId> GetUsernamesAndSessionIds();
-    }
 
-    public class LoggedOnUsersService : ILoggedOnUsersService
+	public class LoggedOnUsersService : ILoggedOnUsersService
     {
         [DllImport("wtsapi32.dll")]
         static extern IntPtr WTSOpenServer([MarshalAs(UnmanagedType.LPStr)] string pServerName);

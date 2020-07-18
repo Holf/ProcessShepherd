@@ -9,12 +9,6 @@ using System.Security.Policy;
 
 namespace Holf.ProcessShepherd.Service.ProcessManagement
 {
-	public interface IUsernameService
-	{
-		string GetLoggedOnUsername();
-
-		bool GetShouldShepherdLoggedOnUser(List<string> shepherdedUsers, string loggedOnUsername);
-	}
 
 	public class UsernameService : IUsernameService
 	{

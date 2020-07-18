@@ -33,8 +33,6 @@ namespace Holf.ProcessShepherd.Service
         {
             var shepherdConfiguration = await shepherdConfigurationProvider.GetConfiguration();
 
-            logger.LogInformation($"Configuration is refreshed every {shepherdConfiguration.ConfigUpdatePollIntervalMs} milliseconds.");
-
             var loggedOnUsername = usernameService.GetLoggedOnUsername();
             if (!usernameService.GetShouldShepherdLoggedOnUser(shepherdConfiguration.ShepherdedUsers, loggedOnUsername))
             {

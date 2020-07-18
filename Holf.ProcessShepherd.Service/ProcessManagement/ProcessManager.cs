@@ -6,12 +6,8 @@ using System.Linq;
 
 namespace Holf.ProcessShepherd.Service.ProcessManagement
 {
-    public interface IProcessManager
-    {
-        void TerminateUnpermittedServices(ShepherdConfiguration shepherdConfiguration);
-    }
 
-    public class ProcessManager : IProcessManager
+	public class ProcessManager : IProcessManager
     {
         private readonly ILogger logger;
         private readonly IUsernameService usernameService;

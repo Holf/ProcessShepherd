@@ -33,8 +33,6 @@ namespace Holf.ProcessShepherd.Service
             this.processManager = processManager;
         }
 
-         
-
         public bool Start(HostControl hostControl)
         {
             return StartAsync().GetAwaiter().GetResult();
@@ -53,7 +51,6 @@ namespace Holf.ProcessShepherd.Service
             };
 
             timer.Elapsed += (sender, e) => Timer_Elapsed(sender, e);
-
             timer.Start();
 
             return true;
@@ -65,7 +62,7 @@ namespace Holf.ProcessShepherd.Service
             {
                 if (processing)
                 {
-                    logger.LogInformation("Already processing");
+                    logger.LogWarning("Attempt to start verifying processes before last verification has finished. Aborting...");
                     return;
                 }
 

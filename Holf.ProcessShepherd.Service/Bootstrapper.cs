@@ -1,4 +1,5 @@
 ﻿using Holf.ProcessShepherd.Service.Configuration;
+using Holf.ProcessShepherd.Service.DateTimeManagement;
 using Holf.ProcessShepherd.Service.ProcessManagement;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ namespace Holf.ProcessShepherd.Service
                 builder.AddFile(o => o.RootPath = AppContext.BaseDirectory);
             });
 
+            services.AddSingleton<IDateTimeService, DateTimeService>();
             services.AddSingleton<IShepherdConfigurationProvider, JsonConfigurationProvider>();
             services.AddSingleton<IUsernameService, UsernameService>();
             services.AddSingleton<ILoggedOnUsersService, LoggedOnUsersService>();
