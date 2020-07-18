@@ -1,6 +1,6 @@
 ﻿using Holf.ProcessShepherd.Service.Configuration;
 using Holf.ProcessShepherd.Service.ProcessManagement;
-using System;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using System.Timers;
 using Topshelf;
@@ -13,20 +13,20 @@ namespace Holf.ProcessShepherd.Service
 
         private bool processing;
         
-        private readonly ILogger logger;
+        private readonly Microsoft.Extensions.Logging.ILogger logger;
         private readonly IOrchestrator orchestrator;
         private readonly IShepherdConfigurationProvider shepherdConfigurationProvider;
         private readonly IUsernameService usernameService;
         private readonly IProcessManager processManager;
 
         public WindowsServiceWrapper(
-            ILogger logger,
+            ILoggerFactory loggerFactory,
             IOrchestrator orchestrator,
             IShepherdConfigurationProvider shepherdConfigurationProvider,
             IUsernameService usernameService,
             IProcessManager processManager)
         {
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger<WindowsServiceWrapper>();
             this.orchestrator = orchestrator;
             this.shepherdConfigurationProvider = shepherdConfigurationProvider;
             this.usernameService = usernameService;
@@ -42,7 +42,7 @@ namespace Holf.ProcessShepherd.Service
 
         public async Task<bool> StartAsync()
         {
-            logger.Log("Starting");
+            logger.LogInformation("Starting");
 
             var config = await shepherdConfigurationProvider.GetConfiguration();
 
@@ -65,7 +65,7 @@ namespace Holf.ProcessShepherd.Service
             {
                 if (processing)
                 {
-                    logger.Log("Already processing");
+                    logger.LogInformation("Already processing");
                     return;
                 }
 
@@ -82,7 +82,7 @@ namespace Holf.ProcessShepherd.Service
 
         public bool Stop(HostControl hostControl)
         {
-            logger.Log("Stopping");
+            logger.LogInformation("Stopping");
             return true;
         }
 

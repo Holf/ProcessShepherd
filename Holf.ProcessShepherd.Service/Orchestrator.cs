@@ -1,5 +1,6 @@
 ﻿using Holf.ProcessShepherd.Service.Configuration;
 using Holf.ProcessShepherd.Service.ProcessManagement;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace Holf.ProcessShepherd.Service
@@ -17,12 +18,12 @@ namespace Holf.ProcessShepherd.Service
         private readonly IProcessManager processManager;
 
         public Orchestrator(
-            ILogger logger,
+            ILoggerFactory loggerFactory,
             IShepherdConfigurationProvider shepherdConfigurationProvider,
             IUsernameService usernameService,
             IProcessManager processManager)
         {
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger<Orchestrator>();
             this.shepherdConfigurationProvider = shepherdConfigurationProvider;
             this.usernameService = usernameService;
             this.processManager = processManager;
@@ -32,12 +33,12 @@ namespace Holf.ProcessShepherd.Service
         {
             var shepherdConfiguration = await shepherdConfigurationProvider.GetConfiguration();
 
-            logger.Log($"Configuration is refreshed every {shepherdConfiguration.ConfigUpdatePollIntervalMs} milliseconds.");
+            logger.LogInformation($"Configuration is refreshed every {shepherdConfiguration.ConfigUpdatePollIntervalMs} milliseconds.");
 
             var loggedOnUsername = usernameService.GetLoggedOnUsername();
             if (!usernameService.GetShouldShepherdLoggedOnUser(shepherdConfiguration.ShepherdedUsers, loggedOnUsername))
             {
-                logger.Log($"Currently logged on user '{loggedOnUsername}' is not in list of users to be shepherded. No further action will be taken.");
+                logger.LogInformation($"Currently logged on user '{loggedOnUsername}' is not in list of users to be shepherded. No further action will be taken.");
                 return;
             }
 

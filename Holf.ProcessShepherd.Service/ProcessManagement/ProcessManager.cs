@@ -1,4 +1,5 @@
 ﻿using Holf.ProcessShepherd.Service.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -16,9 +17,9 @@ namespace Holf.ProcessShepherd.Service.ProcessManagement
         private readonly IUsernameService usernameService;
         private readonly ILoggedOnUsersService loggedOnUsersService;
 
-        public ProcessManager(ILogger logger, IUsernameService usernameService, ILoggedOnUsersService loggedOnUsersService)
+        public ProcessManager(ILoggerFactory logger, IUsernameService usernameService, ILoggedOnUsersService loggedOnUsersService)
         {
-            this.logger = logger;
+            this.logger = logger.CreateLogger<ProcessManager>();
             this.usernameService = usernameService;
             this.loggedOnUsersService = loggedOnUsersService;
         }
@@ -37,7 +38,7 @@ namespace Holf.ProcessShepherd.Service.ProcessManagement
 
             if (shepherdProcess != null)
             {
-                logger.Log("Shepherd Process is running... no processes will be terminated");
+                logger.LogInformation("Shepherd Process is running... no processes will be terminated");
                 return;
             }
 
